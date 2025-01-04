@@ -4,7 +4,11 @@ import 'package:elisam_store_management/models/productdata.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 
 class SalesScreen extends StatefulWidget {
-  const SalesScreen({super.key});
+  static final GlobalKey<_SalesScreenState> globalKey =
+      GlobalKey<_SalesScreenState>();
+  static final ValueNotifier<int> cartItemCountNotifier = ValueNotifier<int>(0);
+
+  const SalesScreen({Key? key}) : super(key: key);
 
   @override
   _SalesScreenState createState() => _SalesScreenState();
@@ -35,6 +39,15 @@ class _SalesScreenState extends State<SalesScreen> {
     colors: [Colors.grey.shade400, Colors.grey.shade600],
   );
 
+  final _successGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Colors.green.shade400,
+      Colors.green.shade600,
+    ],
+  );
+
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _barcodeController = TextEditingController();
   final List<CartItem> _cartItems = [];
@@ -42,8 +55,11 @@ class _SalesScreenState extends State<SalesScreen> {
   List<Product> _filteredProducts = products;
   final FocusNode _barcodeFocusNode = FocusNode();
 
-  int get cartItemCount =>
-      _cartItems.fold(0, (sum, item) => sum + item.quantity);
+  int get cartItemCount {
+    final count = _cartItems.fold(0, (sum, item) => sum + item.quantity);
+    SalesScreen.cartItemCountNotifier.value = count;
+    return count;
+  }
 
   @override
   void initState() {
@@ -117,23 +133,77 @@ class _SalesScreenState extends State<SalesScreen> {
         }
         _updateTotalCost();
 
-        // Show feedback
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${product.name} added to cart'),
-            duration: const Duration(seconds: 1),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: 'VIEW CART',
-              onPressed: () {
-                if (MediaQuery.of(context).size.width <= 600) {
-                  _showCartModal(context);
-                }
-              },
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 1),
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            content: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: _successGradient,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        '${product.name} added to cart',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (MediaQuery.of(context).size.width <= 600) {
+                        showCartModal(context);
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      'VIEW CART',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
       }
+      cartItemCount;
     });
   }
 
@@ -147,6 +217,7 @@ class _SalesScreenState extends State<SalesScreen> {
         item.product.quantityLeft++;
       }
       _updateTotalCost();
+      cartItemCount;
     });
   }
 
@@ -165,6 +236,7 @@ class _SalesScreenState extends State<SalesScreen> {
     setState(() {
       _cartItems.clear();
       _totalCost = 0.0;
+      cartItemCount;
     });
   }
 
@@ -325,15 +397,14 @@ class _SalesScreenState extends State<SalesScreen> {
   }
 
   Widget _buildInputFields(bool isLargeScreen) {
-    return Container(
-      width: double.infinity,
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: isLargeScreen
           ? Row(
               children: [
-                Expanded(child: _buildBarcodeField()),
-                const SizedBox(width: 24),
                 Expanded(child: _buildSearchField()),
+                const SizedBox(width: 24),
+                Expanded(child: _buildBarcodeField()),
               ],
             )
           : Column(
@@ -348,6 +419,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Widget _buildBarcodeField() {
     return Container(
+      height: 56, // Fixed height
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -375,12 +447,6 @@ class _SalesScreenState extends State<SalesScreen> {
           color: Colors.grey[800],
         ),
         decoration: InputDecoration(
-          labelText: 'Scan Barcode',
-          labelStyle: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
           hintText: 'Scan or enter barcode',
           hintStyle: TextStyle(
             color: Colors.grey[400],
@@ -417,8 +483,7 @@ class _SalesScreenState extends State<SalesScreen> {
           ),
           filled: true,
           fillColor: Colors.grey[50],
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
     );
@@ -426,6 +491,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Widget _buildSearchField() {
     return Container(
+      height: 50, // Increased height to match the card
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -452,13 +518,7 @@ class _SalesScreenState extends State<SalesScreen> {
           color: Colors.grey[800],
         ),
         decoration: InputDecoration(
-          labelText: 'Search Products',
-          labelStyle: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-          hintText: 'Enter product name',
+          hintText: 'Search products',
           hintStyle: TextStyle(
             color: Colors.grey[400],
             fontSize: 14,
@@ -482,8 +542,8 @@ class _SalesScreenState extends State<SalesScreen> {
           ),
           filled: true,
           fillColor: Colors.grey[50],
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16, vertical: 18), // Adjusted padding
         ),
         onChanged: _filterProducts,
       ),
@@ -621,7 +681,7 @@ class _SalesScreenState extends State<SalesScreen> {
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.7,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
@@ -637,102 +697,103 @@ class _SalesScreenState extends State<SalesScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 140,
-            child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  product.imageUrl != null
-                      ? Image.network(
-                          product.imageUrl,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          color: Colors.grey[100],
-                          child: Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey[400],
+      clipBehavior: Clip.hardEdge,
+      child: Container(
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 140,
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    product.imageUrl != null
+                        ? Image.network(
+                            product.imageUrl,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            color: Colors.grey[100],
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                    if (product.quantityLeft <= 5)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: product.quantityLeft == 0
+                                ? Colors.red
+                                : Colors.orange,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            product.quantityLeft == 0
+                                ? 'Out of Stock'
+                                : 'Low Stock',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                  // Stock label
-                  if (product.quantityLeft <= 5)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: product.quantityLeft == 0
-                                ? [Colors.red.shade400, Colors.red.shade600]
-                                : [
-                                    Colors.orange.shade400,
-                                    Colors.orange.shade600
-                                  ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          product.quantityLeft == 0
-                              ? 'Out of Stock'
-                              : 'Low Stock',
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
                             fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          product.price,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                ],
+                    SizedBox(
+                      height: 28,
+                      child: _buildAddToCartButton(product),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        product.price,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildAddToCartButton(product),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -918,7 +979,7 @@ class _SalesScreenState extends State<SalesScreen> {
     );
   }
 
-  void _showCartModal(BuildContext context) {
+  void showCartModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1021,10 +1082,17 @@ class _SalesScreenState extends State<SalesScreen> {
               gradient: _secondaryGradient,
             ),
             child: ElevatedButton.icon(
-              icon: const Icon(Icons.delete_outline, size: 18),
+              icon: const Icon(
+                Icons.delete_outline,
+                size: 18,
+                color: Colors.white,
+              ),
               label: const Text(
                 'Clear Cart',
-                style: TextStyle(fontSize: 13),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
               ),
               onPressed: _clearCart,
               style: ElevatedButton.styleFrom(
@@ -1056,10 +1124,17 @@ class _SalesScreenState extends State<SalesScreen> {
               ],
             ),
             child: ElevatedButton.icon(
-              icon: const Icon(Icons.shopping_cart_checkout, size: 18),
+              icon: const Icon(
+                Icons.shopping_cart_checkout,
+                size: 18,
+                color: Colors.white,
+              ),
               label: const Text(
                 'Checkout',
-                style: TextStyle(fontSize: 13),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.white,
+                ),
               ),
               onPressed: _checkout,
               style: ElevatedButton.styleFrom(

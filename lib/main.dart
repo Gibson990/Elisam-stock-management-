@@ -51,8 +51,8 @@ class _ElisamAppState extends State<ElisamApp> {
               screen: ProductsScreen(),
               selectedPageIndex: 2,
             ),
-        '/sales': (context) => const ScreenWrapper(
-              screen: SalesScreen(),
+        '/sales': (context) => ScreenWrapper(
+              screen: SalesScreen(key: SalesScreen.globalKey),
               selectedPageIndex: 3,
             ),
         '/reports': (context) => const ScreenWrapper(
@@ -121,12 +121,67 @@ class ScreenWrapper extends StatelessWidget {
                 ),
               ),
               actions: [
+                if (selectedPageIndex ==
+                    3) // Show cart icon only on sales screen
+                  Stack(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.shopping_cart_outlined,
+                          color: Colors.indigo,
+                        ),
+                        onPressed: () {
+                          final state = SalesScreen.globalKey.currentState;
+                          if (state != null) {
+                            state.showCartModal(context);
+                          }
+                        },
+                      ),
+                      ValueListenableBuilder<int>(
+                        valueListenable: SalesScreen.cartItemCountNotifier,
+                        builder: (context, count, _) {
+                          return count > 0
+                              ? Positioned(
+                                  right: 8,
+                                  top: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 16,
+                                      minHeight: 16,
+                                    ),
+                                    child: Text(
+                                      '$count',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
                 IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
+                  icon: const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.indigo,
+                  ),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: const Icon(Icons.account_circle_outlined),
+                  icon: const Icon(
+                    Icons.account_circle_outlined,
+                    color: Colors.indigo,
+                  ),
                   onPressed: () {},
                 ),
                 const SizedBox(width: 16),
