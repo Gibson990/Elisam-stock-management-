@@ -5,19 +5,33 @@ import 'package:elisam_store_management/screens/products_screen.dart';
 import 'package:elisam_store_management/screens/sales_screen.dart';
 import 'package:elisam_store_management/screens/reports_screen.dart';
 import 'package:elisam_store_management/widgets/side_drawer.dart';
+import 'package:elisam_store_management/models/sale.dart';
 
 void main() {
   runApp(ElisamApp());
 }
 
-class ElisamApp extends StatelessWidget {
+class ElisamApp extends StatefulWidget {
+  @override
+  _ElisamAppState createState() => _ElisamAppState();
+}
+
+class _ElisamAppState extends State<ElisamApp> {
+  List<Sale> sales = []; // Initialize your sales list
+
+  void addSale(Sale sale) {
+    setState(() {
+      sales.add(sale); // Add sale and trigger UI update
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Elisam',
       theme: ThemeData(
-        primaryColor: Colors.indigo, // Apple iOS Blue
-        hintColor: const Color(0xFFFF2D55), // Apple iOS Red
+        primaryColor: Colors.indigo,
+        hintColor: const Color(0xFFFF2D55),
         scaffoldBackgroundColor: Colors.white,
         textTheme: const TextTheme(
           headlineMedium: TextStyle(color: Colors.black),
@@ -26,24 +40,39 @@ class ElisamApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => DashboardWrapper(),
-        '/categories': (context) =>
-            ScreenWrapper(screen: CategoriesScreen(), selectedPageIndex: 1),
-        '/products': (context) =>
-            ScreenWrapper(screen: ProductsScreen(), selectedPageIndex: 2),
-        '/sales': (context) =>
-            ScreenWrapper(screen: const SalesScreen(), selectedPageIndex: 3),
-        '/reports': (context) =>
-            ScreenWrapper(screen: const ReportsScreen(), selectedPageIndex: 4),
+        '/': (context) => DashboardWrapper(sales: sales),
+        '/categories': (context) => ScreenWrapper(
+              screen: CategoriesScreen(),
+              selectedPageIndex: 1,
+            ),
+        '/products': (context) => const ScreenWrapper(
+              screen: ProductsScreen(),
+              selectedPageIndex: 2,
+            ),
+        '/sales': (context) => ScreenWrapper(
+              screen: SalesScreen(),
+              selectedPageIndex: 3,
+            ),
+        '/reports': (context) => ScreenWrapper(
+              screen: ReportScreen(),
+              selectedPageIndex: 4,
+            ),
       },
     );
   }
 }
 
 class DashboardWrapper extends StatelessWidget {
+  final List<Sale> sales;
+
+  const DashboardWrapper({Key? key, required this.sales}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return ScreenWrapper(screen: DashbordScreen(), selectedPageIndex: 0);
+    return ScreenWrapper(
+      screen: DashbordScreen(sales: sales),
+      selectedPageIndex: 0,
+    );
   }
 }
 

@@ -1,9 +1,11 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:elisam_store_management/models/product.dart';
-import 'package:elisam_store_management/screens/add_product_screen.dart';
-import 'package:elisam_store_management/screens/edit_product_screen.dart';
+import 'package:elisam_store_management/widgets/add_product_button.dart';
 import 'package:elisam_store_management/widgets/product_details_sheet.dart';
+import 'package:elisam_store_management/models/productdata.dart';
+import 'package:elisam_store_management/models/category.dart';
+import 'package:elisam_store_management/models/categories.dart'; // Your categories import
+import 'add_product_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
@@ -13,74 +15,8 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  List<Product> products = [
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 1',
-      price: '\$50',
-      quantityLeft: 10,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      category: 'Recently Added',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 2',
-      price: '\$80',
-      quantityLeft: 5,
-      description: 'Nullam hendrerit ante non ipsum volutpat vestibulum.',
-      category: 'Most Sold',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 3',
-      price: '\$120',
-      quantityLeft: 0,
-      description: 'Pellentesque id turpis varius, fermentum velit sit amet.',
-      category: 'Out of Stock',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 4',
-      price: '\$90',
-      quantityLeft: 8,
-      description:
-          'Vivamus rutrum ipsum non ex cursus, sit amet condimentum nunc luctus.',
-      category: 'Recently Added',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 5',
-      price: '\$60',
-      quantityLeft: 3,
-      description: 'Integer at augue quis nisi egestas fermentum in id ligula.',
-      category: 'Most Sold',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-    Product(
-      id: _generateRandomId(),
-      name: 'Product 6',
-      price: '\$100',
-      quantityLeft: 12,
-      description:
-          'Fusce ultricies dolor sit amet ligula pretium, a tincidunt lacus commodo.',
-      category: 'Recently Added',
-      imageUrl:
-          'https://images.unsplash.com/photo-1571335746824-742511d49bce?q=80&w=1374&auto=format&fit=crop',
-    ),
-  ];
-
   TextEditingController searchController = TextEditingController();
   String searchText = '';
-  Product? selectedProduct;
 
   @override
   void initState() {
@@ -102,6 +38,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Using your existing categories list
+    List<Category> availableCategories = Categories.list;
+
     List<Product> filteredProducts = products.where((product) {
       final nameLower = product.name.toLowerCase();
       final searchLower = searchText.toLowerCase();
@@ -127,46 +66,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     SizedBox(width: 16.0),
                     AddProductButton(
                       onPressed: () {
-                        _navigateToAddProduct(context);
+                        _navigateToAddProduct(context, availableCategories);
                       },
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 20),
-              _buildCategorySections(filteredProducts),
-              if (selectedProduct != null)
-                ProductDetailsSheet(
-                  product: selectedProduct!,
-                  onDelete: _deleteProduct,
-                  onEdit: _editProduct,
-                ),
+              _buildCategorySection('Most Sold',
+                  _filterProductsByCategory(filteredProducts, 'Most Sold')),
+              _buildCategorySection(
+                  'Recently Added',
+                  _filterProductsByCategory(
+                      filteredProducts, 'Recently Added')),
+              _buildCategorySection('Out of Stock',
+                  _filterProductsByCategory(filteredProducts, 'Out of Stock')),
+              _buildCategorySection('All Categories', filteredProducts),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildCategorySections(List<Product> filteredProducts) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildCategorySection(
-          'Recently Added',
-          filteredProducts
-              .where((p) => p.category == 'Recently Added')
-              .toList(),
-        ),
-        _buildCategorySection(
-          'Most Sold',
-          filteredProducts.where((p) => p.category == 'Most Sold').toList(),
-        ),
-        _buildCategorySection(
-          'Out of Stock',
-          filteredProducts.where((p) => p.category == 'Out of Stock').toList(),
-        ),
-      ],
     );
   }
 
@@ -197,10 +116,24 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
+  List<Product> _filterProductsByCategory(
+      List<Product> products, String category) {
+    if (category == 'Out of Stock') {
+      return products.where((product) => product.quantityLeft == 0).toList();
+    } else if (category == 'Most Sold') {
+      return products.take(5).toList(); // Adjust logic for most sold
+    } else if (category == 'Recently Added') {
+      return products.reversed
+          .take(5)
+          .toList(); // Assuming most recent are last
+    }
+    return [];
+  }
+
   Widget _buildCategorySection(String title, List<Product> categoryProducts) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
+      children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Text(
@@ -212,25 +145,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ),
         ),
-        SizedBox(
-          height: MediaQuery.of(context).size.width > 600 ? 400.0 : 300.0,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categoryProducts.length,
-            itemBuilder: (context, index) {
-              return _buildProductCard(context, categoryProducts[index]);
-            },
-          ),
-        ),
-        if (categoryProducts.length > 4)
-          TextButton(
-            onPressed: () {
-              // Navigate to view more products in this category
-            },
-            child: Text('View More'),
-          ),
+        _buildProductGrid(categoryProducts),
         SizedBox(height: 20.0),
       ],
+    );
+  }
+
+  Widget _buildProductGrid(List<Product> products) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        return _buildProductCard(context, products[index]);
+      },
     );
   }
 
@@ -239,168 +173,132 @@ class _ProductsScreenState extends State<ProductsScreen> {
       onTap: () {
         _showProductDetailsSheet(context, product);
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width > 600
-            ? 250.0
-            : MediaQuery.of(context).size.width / 2,
-        margin: EdgeInsets.only(right: 12.0),
-        child: Card(
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              ClipRRect(
+      child: Card(
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              flex: 3,
+              child: ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
                 child: Image.network(
                   product.imageUrl,
                   fit: BoxFit.cover,
-                  height:
-                      MediaQuery.of(context).size.width > 600 ? 200.0 : 120.0,
                 ),
               ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(12.0),
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        product.name,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      product.name,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 4.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Price: ${product.price}',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            'Qty Left: ${product.quantityLeft}',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: product.quantityLeft > 0
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                          ),
-                        ],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      product.description,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.grey[700],
                       ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        product.description,
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey[800],
-                        ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Price: ${product.price}',
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    Text(
+                      'Qty: ${product.quantityLeft}',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: product.quantityLeft > 0
+                            ? Colors.green
+                            : Colors.red,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _navigateToAddProduct(BuildContext context) {
+  void _showProductDetailsSheet(BuildContext context, Product product) {
+    showProductDetailsSheet(
+      context,
+      product,
+      onDelete: () {
+        _deleteProduct(product);
+        Navigator.pop(context);
+      },
+      onEdit: (editedProduct) {
+        _editProduct(editedProduct);
+        Navigator.pop(context);
+      },
+      onUpdateProduct: (updatedProduct) {
+        _updateProduct(updatedProduct);
+      },
+      categoryId: product.categoryId,
+    );
+  }
+
+  void _deleteProduct(Product product) {
+    setState(() {
+      products.remove(product);
+    });
+  }
+
+  void _editProduct(Product editedProduct) {
+    setState(() {
+      int index =
+          products.indexWhere((product) => product.id == editedProduct.id);
+      if (index != -1) {
+        products[index] = editedProduct;
+      }
+    });
+  }
+
+  void _updateProduct(Product updatedProduct) {
+    setState(() {
+      int index =
+          products.indexWhere((product) => product.id == updatedProduct.id);
+      if (index != -1) {
+        products[index] = updatedProduct;
+      }
+    });
+  }
+
+  void _navigateToAddProduct(
+      BuildContext context, List<Category> availableCategories) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddProductScreen()),
+      MaterialPageRoute(
+          builder: (context) => AddProductScreen(
+                categories: availableCategories,
+              )),
     ).then((newProduct) {
       if (newProduct != null) {
-        newProduct.id = _generateRandomId();
         setState(() {
           products.add(newProduct);
         });
       }
     });
-  }
-
-  void _deleteProduct() {
-    if (selectedProduct != null) {
-      setState(() {
-        products.remove(selectedProduct);
-        selectedProduct = null;
-      });
-      Navigator.pop(context); // Close the bottom sheet after deletion
-    }
-  }
-
-  void _editProduct() {
-    if (selectedProduct != null) {
-      Navigator.pop(context); // Close the bottom sheet before navigating
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EditProductScreen(product: selectedProduct!),
-        ),
-      );
-    }
-  }
-
-  void _showProductDetailsSheet(BuildContext context, Product product) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return ProductDetailsSheet(
-          product: product,
-          onDelete: _deleteProduct,
-          onEdit: _editProduct,
-        );
-      },
-    ).then((_) {
-      setState(() {
-        selectedProduct = null; // Clear selected product after closing sheet
-      });
-    });
-  }
-
-  static String _generateRandomId() {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random();
-    return String.fromCharCodes(
-      Iterable.generate(
-          10, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
-    );
-  }
-}
-
-class AddProductButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const AddProductButton({Key? key, required this.onPressed}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50.0,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(Icons.add),
-        label: Text('Add Product'),
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.indigo,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -1,11 +1,15 @@
+import 'package:elisam_store_management/models/category.dart';
+
 class Product {
-  String id;
-  String name;
-  String price;
+  final String id;
+  final String name;
+  final String price;
   int quantityLeft;
-  String description;
-  String category;
-  String imageUrl;
+  final String description;
+  final String categoryId; // Add this line
+  final Category category;
+  final String imageUrl;
+  List<String> barcodes;
 
   Product({
     required this.id,
@@ -13,7 +17,9 @@ class Product {
     required this.price,
     required this.quantityLeft,
     required this.description,
+    required this.categoryId, // Add this line
     required this.category,
     required this.imageUrl,
-  });
+    required List<String>? barcodes,
+  }) : barcodes = barcodes ?? [];
 }

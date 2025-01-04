@@ -1,10 +1,14 @@
+import 'package:flutter/material.dart';
+
 class Category {
-  final String id; // Unique identifier for the category
+  final String id;
   final String name;
+  final IconData icon;
 
   Category({
     required this.id,
     required this.name,
+    required this.icon,
   });
 
   // Factory constructor for creating a Category object from a map
@@ -12,6 +16,7 @@ class Category {
     return Category(
       id: map['id'],
       name: map['name'],
+      icon: IconData(map['icon'], fontFamily: 'MaterialIcons'),
     );
   }
 
@@ -20,6 +25,7 @@ class Category {
     return {
       'id': id,
       'name': name,
+      'icon': icon.codePoint,
     };
   }
 }
