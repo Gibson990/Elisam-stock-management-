@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:elisam_store_management/models/product.dart';
-import 'package:elisam_store_management/widgets/add_product_button.dart';
+// import 'package:elisam_store_management/widgets/add_product_button.dart';
 import 'package:elisam_store_management/widgets/product_details_sheet.dart';
 import 'package:elisam_store_management/models/productdata.dart';
 import 'package:elisam_store_management/models/category.dart';
@@ -8,7 +8,7 @@ import 'package:elisam_store_management/models/categories.dart'; // Your categor
 import 'add_product_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+  const ProductsScreen({super.key});
 
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
@@ -38,14 +38,60 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Using your existing categories list
     List<Category> availableCategories = Categories.list;
+    final isSmallScreen = MediaQuery.of(context).size.width <= 600;
 
     List<Product> filteredProducts = products.where((product) {
       final nameLower = product.name.toLowerCase();
       final searchLower = searchText.toLowerCase();
       return nameLower.contains(searchLower);
     }).toList();
+
+    Widget addProductButton = Container(
+      height: 48, // Reduced height from 56 to 48
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.indigo.shade500,
+            Colors.blue.shade600,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          _navigateToAddProduct(context, availableCategories);
+        },
+        icon:
+            const Icon(Icons.add, color: Colors.white, size: 20), // Reduced icon size
+        label: const Text(
+          'Add Product',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14, // Reduced font size
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -55,24 +101,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
+              if (isSmallScreen) ...[
+                _buildSearchBar(),
+                const SizedBox(height: 12),
+                addProductButton,
+              ] else ...[
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                       child: _buildSearchBar(),
                     ),
-                    SizedBox(width: 16.0),
-                    AddProductButton(
-                      onPressed: () {
-                        _navigateToAddProduct(context, availableCategories);
-                      },
-                    ),
+                    const SizedBox(width: 16.0),
+                    addProductButton,
                   ],
                 ),
-              ),
-              SizedBox(height: 20),
+              ],
+              const SizedBox(height: 20),
               _buildCategorySection('Most Sold',
                   _filterProductsByCategory(filteredProducts, 'Most Sold')),
               _buildCategorySection(
@@ -91,26 +136,74 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Widget _buildSearchBar() {
     return Container(
-      height: 50.0,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 4,
+            spreadRadius: -1,
+          ),
+        ],
+      ),
       child: TextField(
         controller: searchController,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[800],
+        ),
         decoration: InputDecoration(
-          hintText: 'Search products...',
-          filled: true,
-          fillColor: Colors.white,
+          labelText: 'Search Products',
+          labelStyle: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          hintText: 'Search by name, category...',
+          hintStyle: TextStyle(
+            color: Colors.grey[400],
+            fontSize: 14,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.indigo[400],
+            size: 22,
+          ),
+          suffixIcon: searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey[400]),
+                  onPressed: () {
+                    searchController.clear();
+                    setState(() {
+                      searchText = '';
+                    });
+                  },
+                )
+              : null,
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(8.0),
           ),
-          suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: () {
-              searchController.clear();
-              setState(() {
-                searchText = '';
-              });
-            },
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
           ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.indigo[300]!, width: 1.5),
+          ),
+          filled: true,
+          fillColor: Colors.grey[50],
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
     );
@@ -138,7 +231,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -146,20 +239,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ),
         _buildProductGrid(categoryProducts),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
       ],
     );
   }
 
   Widget _buildProductGrid(List<Product> products) {
+    final isSmallScreen = MediaQuery.of(context).size.width <= 600;
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-        childAspectRatio: 0.7,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisCount: isSmallScreen ? 2 : 4,
+        childAspectRatio:
+            isSmallScreen ? 0.6 : 0.7, // Adjusted for small screens
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
@@ -169,6 +264,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Widget _buildProductCard(BuildContext context, Product product) {
+    final isSmallScreen = MediaQuery.of(context).size.width <= 600;
+
     return GestureDetector(
       onTap: () {
         _showProductDetailsSheet(context, product);
@@ -184,51 +281,85 @@ class _ProductsScreenState extends State<ProductsScreen> {
             Expanded(
               flex: 3,
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
                 child: Image.network(
                   product.imageUrl,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[200],
+                      child: Icon(
+                        Icons.image_not_supported,
+                        color: Colors.grey[400],
+                        size: 40,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: isSmallScreen
+                  ? 3
+                  : 2, // More space for content on small screens
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
                       product.name,
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: isSmallScreen ? 14.0 : 16.0,
                         fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      product.description,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey[700],
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text(
-                      'Price: ${product.price}',
-                      style: TextStyle(fontSize: 14.0),
-                    ),
-                    Text(
-                      'Qty: ${product.quantityLeft}',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: product.quantityLeft > 0
-                            ? Colors.green
-                            : Colors.red,
+                    const SizedBox(height: 4),
+                    Expanded(
+                      child: Text(
+                        product.description,
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 12.0 : 14.0,
+                          color: Colors.grey[700],
+                        ),
+                        overflow: TextOverflow.fade,
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          product.price,
+                          style: TextStyle(
+                            fontSize: isSmallScreen ? 13.0 : 14.0,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.indigo[700],
+                          ),
+                        ),
+                        Container(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: product.quantityLeft > 0
+                                ? Colors.green[50]
+                                : Colors.red[50],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'Qty: ${product.quantityLeft}',
+                            style: TextStyle(
+                              fontSize: isSmallScreen ? 12.0 : 13.0,
+                              fontWeight: FontWeight.w500,
+                              color: product.quantityLeft > 0
+                                  ? Colors.green[700]
+                                  : Colors.red[700],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

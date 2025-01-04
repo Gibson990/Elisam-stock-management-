@@ -2,7 +2,7 @@ import 'package:uuid/uuid.dart';
 import 'categories.dart';
 import 'product.dart';
 
-final uuid = Uuid();
+const uuid = Uuid();
 
 List<Product> products = [
   Product(

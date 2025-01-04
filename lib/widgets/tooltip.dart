@@ -5,9 +5,9 @@ class ChartTooltip extends StatelessWidget {
   final String value;
 
   const ChartTooltip({
-    Key? key,
+    super.key,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

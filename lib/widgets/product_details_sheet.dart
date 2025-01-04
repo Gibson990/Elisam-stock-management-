@@ -17,13 +17,13 @@ class ProductDetailsSheet extends StatelessWidget {
   final String categoryId;
 
   const ProductDetailsSheet({
-    Key? key,
+    super.key,
     required this.product,
     required this.onDelete,
     required this.onEdit,
     required this.onUpdateProduct,
     required this.categoryId, // Add this line
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,8 @@ class ProductDetailsSheet extends StatelessWidget {
         ? Center(
             child: Container(
               width: 600,
-              padding: EdgeInsets.all(16.0),
-              margin: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
@@ -46,7 +46,7 @@ class ProductDetailsSheet extends StatelessWidget {
                     top: 0,
                     right: 0,
                     child: IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -55,7 +55,7 @@ class ProductDetailsSheet extends StatelessWidget {
             ),
           )
         : Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             color: Colors.white,
             child: _buildSmallScreenContent(context),
           );
@@ -67,14 +67,14 @@ class ProductDetailsSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
+          const Text(
             'Product Details',
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           AspectRatio(
             aspectRatio: 16 / 9,
             child: ClipRRect(
@@ -85,7 +85,7 @@ class ProductDetailsSheet extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Scrollbar(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -94,41 +94,42 @@ class ProductDetailsSheet extends StatelessWidget {
                 children: [
                   Text(
                     'Name: ${product.name}',
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 14.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     'Price: ${product.price}',
-                    style: TextStyle(fontSize: 16.0, color: Colors.green),
+                    style: const TextStyle(fontSize: 16.0, color: Colors.green),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     'Quantity Left: ${product.quantityLeft}',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     'Description: ${product.description}',
-                    style: TextStyle(fontSize: 16.0),
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: product.barcodes.isEmpty ? Colors.grey : Colors.green,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'Barcode: ${product.barcodes.isEmpty ? 'Not generated' : 'Generated'}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,
                   ),
@@ -136,7 +137,7 @@ class ProductDetailsSheet extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Align(
             alignment: Alignment.centerRight,
             child: Row(
@@ -144,7 +145,7 @@ class ProductDetailsSheet extends StatelessWidget {
               children: <Widget>[
                 TextButton(
                   onPressed: () => _generateBarcodes(context),
-                  child: Text(
+                  child: const Text(
                     'Generate Barcodes',
                     style: TextStyle(
                       color: Colors.blue,
@@ -153,11 +154,11 @@ class ProductDetailsSheet extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onDelete,
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                 ),
                 IconButton(
                   onPressed: () => _navigateToEditProduct(context),
-                  icon: Icon(Icons.edit, color: Colors.blue),
+                  icon: const Icon(Icons.edit, color: Colors.blue),
                 ),
               ],
             ),
@@ -173,14 +174,14 @@ class ProductDetailsSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
+          const Text(
             'Product Details',
             style: TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           AspectRatio(
             aspectRatio: 16 / 9,
             child: ClipRRect(
@@ -191,39 +192,40 @@ class ProductDetailsSheet extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Text(
             'Name: ${product.name}',
-            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Text(
             'Price: ${product.price}',
-            style: TextStyle(fontSize: 16.0, color: Colors.green),
+            style: const TextStyle(fontSize: 16.0, color: Colors.green),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Text(
             'Quantity Left: ${product.quantityLeft}',
-            style: TextStyle(fontSize: 16.0),
+            style: const TextStyle(fontSize: 16.0),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Text(
             'Description: ${product.description}',
-            style: TextStyle(fontSize: 16.0),
+            style: const TextStyle(fontSize: 16.0),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: product.barcodes.isEmpty ? Colors.grey : Colors.green,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   'Barcode: ${product.barcodes.isEmpty ? 'Not generated' : 'Generated'}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,
                   ),
@@ -231,7 +233,7 @@ class ProductDetailsSheet extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Align(
             alignment: Alignment.centerRight,
             child: Row(
@@ -239,7 +241,7 @@ class ProductDetailsSheet extends StatelessWidget {
               children: <Widget>[
                 TextButton(
                   onPressed: () => _generateBarcodes(context),
-                  child: Text(
+                  child: const Text(
                     'Generate Barcodes',
                     style: TextStyle(
                       color: Colors.blue,
@@ -248,11 +250,11 @@ class ProductDetailsSheet extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onDelete,
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                 ),
                 IconButton(
                   onPressed: () => _navigateToEditProduct(context),
-                  icon: Icon(Icons.edit, color: Colors.blue),
+                  icon: const Icon(Icons.edit, color: Colors.blue),
                 ),
               ],
             ),
@@ -270,7 +272,7 @@ class ProductDetailsSheet extends StatelessWidget {
         builder: (context) => EditProductScreen(
           product: product,
           categoryId: categoryId, // Pass categoryId here
-          Categories: [], // Adjust if needed
+          Categories: const [], // Adjust if needed
         ),
       ),
     ).then((editedProduct) {
@@ -284,7 +286,7 @@ class ProductDetailsSheet extends StatelessWidget {
     final pdf = pw.Document();
     final barcode = Barcode.code128();
     final int totalBarcodes = product.quantityLeft;
-    final int barcodesPerPage = 10;
+    const int barcodesPerPage = 10;
     final int pagesNeeded = (totalBarcodes / barcodesPerPage).ceil();
 
     List<String> generatedBarcodes = [];
@@ -393,7 +395,7 @@ void showProductDetailsSheet(
       barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
-          insetPadding: EdgeInsets.all(16.0),
+          insetPadding: const EdgeInsets.all(16.0),
           backgroundColor: Colors.transparent,
           child: ProductDetailsSheet(
             product: product,

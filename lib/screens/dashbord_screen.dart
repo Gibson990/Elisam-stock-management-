@@ -57,13 +57,13 @@ class _DashboardScreenState extends State<DashbordScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50], // Light background color
+          color: Colors.grey[50],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24.0), // Increased padding
+          padding: const EdgeInsets.all(24.0),
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
-              bool isDesktop = constraints.maxWidth > 600;
+              final bool isSmallDevice = constraints.maxWidth <= 683;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -119,8 +119,10 @@ class _DashboardScreenState extends State<DashbordScreen> {
 
                   // Image container with shadow
                   Container(
-                    width: 300,
-                    height: 200,
+                    width: isSmallDevice
+                        ? 200
+                        : 300, // Adjust width for small devices
+                    height: isSmallDevice ? 133 : 200, // Maintain aspect ratio
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
@@ -131,7 +133,7 @@ class _DashboardScreenState extends State<DashbordScreen> {
                         ),
                       ],
                     ),
-                    clipBehavior: Clip.antiAlias, // For rounded corners
+                    clipBehavior: Clip.antiAlias,
                     child: Image.asset(
                       'assets/welcome_image.png',
                       fit: BoxFit.cover,
@@ -141,7 +143,13 @@ class _DashboardScreenState extends State<DashbordScreen> {
                   const SizedBox(height: 30),
 
                   // Cards Section
-                  isDesktop ? _buildDesktopCards() : _buildMobileCards(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: isSmallDevice
+                          ? _buildMobileCards()
+                          : _buildDesktopCards(),
+                    ),
+                  ),
                 ],
               );
             },
@@ -155,20 +163,50 @@ class _DashboardScreenState extends State<DashbordScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Expanded(
+            child: _buildCard(
+          'Total Products',
+          '500',
+          Icons.storage,
+          [Colors.blue.shade400, Colors.blue.shade600],
+        )),
+        const SizedBox(width: 20),
+        Expanded(
+            child: _buildCard(
+          'Total Categories',
+          '10',
+          Icons.category,
+          [Colors.purple.shade400, Colors.purple.shade600],
+        )),
+        const SizedBox(width: 20),
+        Expanded(
+            child: _buildCard(
+          'Total ${selectedSalesRange.toLowerCase()} Sales',
+          totalSalesValue,
+          Icons.attach_money,
+          [Colors.green.shade400, Colors.green.shade600],
+        )),
+      ],
+    );
+  }
+
+  Widget _buildMobileCards() {
+    return Column(
+      children: <Widget>[
         _buildCard(
           'Total Products',
           '500',
           Icons.storage,
           [Colors.blue.shade400, Colors.blue.shade600],
         ),
-        const SizedBox(width: 20),
+        const SizedBox(height: 20),
         _buildCard(
           'Total Categories',
           '10',
           Icons.category,
           [Colors.purple.shade400, Colors.purple.shade600],
         ),
-        const SizedBox(width: 20),
+        const SizedBox(height: 20),
         _buildCard(
           'Total ${selectedSalesRange.toLowerCase()} Sales',
           totalSalesValue,
@@ -176,37 +214,6 @@ class _DashboardScreenState extends State<DashbordScreen> {
           [Colors.green.shade400, Colors.green.shade600],
         ),
       ],
-    );
-  }
-
-  Widget _buildMobileCards() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            _buildCard(
-              'Total Products',
-              '500',
-              Icons.storage,
-              [Colors.blue.shade400, Colors.blue.shade600],
-            ),
-            const SizedBox(height: 20),
-            _buildCard(
-              'Total Categories',
-              '10',
-              Icons.category,
-              [Colors.purple.shade400, Colors.purple.shade600],
-            ),
-            const SizedBox(height: 20),
-            _buildCard(
-              'Total ${selectedSalesRange.toLowerCase()} Sales',
-              totalSalesValue,
-              Icons.attach_money,
-              [Colors.green.shade400, Colors.green.shade600],
-            ),
-          ],
-        ),
-      ),
     );
   }
 

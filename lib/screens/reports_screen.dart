@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class ReportScreen extends StatelessWidget {
-  const ReportScreen({Key? key}) : super(key: key);
+  const ReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,53 +26,98 @@ class ReportScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  blurRadius: 10,
+                                  color: Colors.indigo.withOpacity(0.08),
                                   offset: const Offset(0, 4),
+                                  blurRadius: 12,
+                                  spreadRadius: 0,
+                                ),
+                                BoxShadow(
+                                  color: Colors.indigo.withOpacity(0.05),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 4,
+                                  spreadRadius: -1,
                                 ),
                               ],
                             ),
                             child: TextField(
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[800],
+                              ),
                               decoration: InputDecoration(
-                                hintText: 'Search...',
+                                labelText: 'Search Reports',
+                                labelStyle: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                hintText: 'Search by date, product...',
                                 hintStyle: TextStyle(
                                   color: Colors.grey[400],
                                   fontSize: 14,
                                 ),
                                 prefixIcon: Icon(
                                   Icons.search,
-                                  color: Colors.grey[400],
+                                  color: Colors.indigo[400],
+                                  size: 22,
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
                                 ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors.grey[200]!, width: 1),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: Colors.indigo[300]!, width: 1.5),
+                                ),
                                 filled: true,
                                 fillColor: Colors.grey[50],
                                 contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 16,
-                                ),
+                                    horizontal: 16, vertical: 16),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 24),
                         Container(
-                          width: 140,
+                          width: 180,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.1),
-                                blurRadius: 10,
+                                color: Colors.indigo.withOpacity(0.08),
                                 offset: const Offset(0, 4),
+                                blurRadius: 12,
+                                spreadRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: Colors.indigo.withOpacity(0.05),
+                                offset: const Offset(0, 2),
+                                blurRadius: 4,
+                                spreadRadius: -1,
                               ),
                             ],
                           ),
                           child: TextField(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
                             decoration: InputDecoration(
+                              labelText: 'Select Date',
+                              labelStyle: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
                               hintText: 'YYYY-MM-DD',
                               hintStyle: TextStyle(
                                 color: Colors.grey[400],
@@ -80,19 +125,27 @@ class ReportScreen extends StatelessWidget {
                               ),
                               prefixIcon: Icon(
                                 Icons.calendar_today,
-                                color: Colors.grey[400],
-                                size: 20,
+                                color: Colors.indigo[400],
+                                size: 22,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200]!, width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.indigo[300]!, width: 1.5),
+                              ),
                               filled: true,
                               fillColor: Colors.grey[50],
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
-                              ),
+                                  horizontal: 16, vertical: 16),
                             ),
                           ),
                         ),
@@ -211,33 +264,124 @@ class ReportScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.1),
-                                blurRadius: 10,
+                                color: Colors.indigo.withOpacity(0.08),
                                 offset: const Offset(0, 4),
+                                blurRadius: 12,
+                                spreadRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: Colors.indigo.withOpacity(0.05),
+                                offset: const Offset(0, 2),
+                                blurRadius: 4,
+                                spreadRadius: -1,
                               ),
                             ],
                           ),
                           child: TextField(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
                             decoration: InputDecoration(
-                              hintText: 'Search...',
+                              labelText: 'Search Reports',
+                              labelStyle: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              hintText: 'Search by date, product...',
                               hintStyle: TextStyle(
                                 color: Colors.grey[400],
                                 fontSize: 14,
                               ),
                               prefixIcon: Icon(
                                 Icons.search,
-                                color: Colors.grey[400],
+                                color: Colors.indigo[400],
+                                size: 22,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200]!, width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.indigo[300]!, width: 1.5),
+                              ),
                               filled: true,
                               fillColor: Colors.grey[50],
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
+                                  horizontal: 16, vertical: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.indigo.withOpacity(0.08),
+                                offset: const Offset(0, 4),
+                                blurRadius: 12,
+                                spreadRadius: 0,
                               ),
+                              BoxShadow(
+                                color: Colors.indigo.withOpacity(0.05),
+                                offset: const Offset(0, 2),
+                                blurRadius: 4,
+                                spreadRadius: -1,
+                              ),
+                            ],
+                          ),
+                          child: TextField(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Select Date',
+                              labelStyle: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              hintText: 'YYYY-MM-DD',
+                              hintStyle: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 14,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.calendar_today,
+                                color: Colors.indigo[400],
+                                size: 22,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.grey[200]!, width: 1),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    color: Colors.indigo[300]!, width: 1.5),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[50],
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 16),
                             ),
                           ),
                         ),
@@ -502,8 +646,8 @@ class ReportScreen extends StatelessWidget {
   // Helper method to build growth indicator
   Widget _buildGrowthIndicator(String title) {
     // You can make this dynamic based on actual data
-    final isPositive = true;
-    final percentage = '12%';
+    const isPositive = true;
+    const percentage = '12%';
 
     return Row(
       children: [
@@ -784,10 +928,10 @@ class ReportScreen extends StatelessWidget {
                         reservedSize: 60,
                       ),
                     ),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                   ),
                   gridData: FlGridData(
                     show: true,
@@ -996,10 +1140,10 @@ class ReportScreen extends StatelessWidget {
                             60, // Increased to accommodate the fixed width
                       ),
                     ),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                   ),
                   borderData: FlBorderData(show: false),
                   minX: 0,
@@ -1052,7 +1196,7 @@ class ReportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonGroup({bool isSmallScreen = false}) {
+  Widget _buildButtonGroup() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -1098,7 +1242,7 @@ class ReportScreen extends StatelessWidget {
 class CustomTooltip extends StatelessWidget {
   final String value;
 
-  const CustomTooltip({Key? key, required this.value}) : super(key: key);
+  const CustomTooltip({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {

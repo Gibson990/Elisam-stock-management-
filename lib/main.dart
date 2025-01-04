@@ -8,10 +8,12 @@ import 'package:elisam_store_management/widgets/side_drawer.dart';
 import 'package:elisam_store_management/models/sale.dart';
 
 void main() {
-  runApp(ElisamApp());
+  runApp(const ElisamApp());
 }
 
 class ElisamApp extends StatefulWidget {
+  const ElisamApp({super.key});
+
   @override
   _ElisamAppState createState() => _ElisamAppState();
 }
@@ -41,7 +43,7 @@ class _ElisamAppState extends State<ElisamApp> {
       initialRoute: '/',
       routes: {
         '/': (context) => DashboardWrapper(sales: sales),
-        '/categories': (context) => ScreenWrapper(
+        '/categories': (context) => const ScreenWrapper(
               screen: CategoriesScreen(),
               selectedPageIndex: 1,
             ),
@@ -49,11 +51,11 @@ class _ElisamAppState extends State<ElisamApp> {
               screen: ProductsScreen(),
               selectedPageIndex: 2,
             ),
-        '/sales': (context) => ScreenWrapper(
+        '/sales': (context) => const ScreenWrapper(
               screen: SalesScreen(),
               selectedPageIndex: 3,
             ),
-        '/reports': (context) => ScreenWrapper(
+        '/reports': (context) => const ScreenWrapper(
               screen: ReportScreen(),
               selectedPageIndex: 4,
             ),
@@ -65,7 +67,7 @@ class _ElisamAppState extends State<ElisamApp> {
 class DashboardWrapper extends StatelessWidget {
   final List<Sale> sales;
 
-  const DashboardWrapper({Key? key, required this.sales}) : super(key: key);
+  const DashboardWrapper({super.key, required this.sales});
 
   @override
   Widget build(BuildContext context) {
@@ -80,39 +82,149 @@ class ScreenWrapper extends StatelessWidget {
   final Widget screen;
   final int selectedPageIndex;
 
-  const ScreenWrapper({required this.screen, required this.selectedPageIndex});
+  const ScreenWrapper(
+      {super.key, required this.screen, required this.selectedPageIndex});
+
+  String _getScreenTitle() {
+    switch (selectedPageIndex) {
+      case 0:
+        return 'Dashboard';
+      case 1:
+        return 'Categories';
+      case 2:
+        return 'Products';
+      case 3:
+        return 'Sales';
+      case 4:
+        return 'Reports';
+      default:
+        return 'Elisam';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool isDesktop = MediaQuery.of(context).size.width > 1200;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Elisam'),
+      appBar: isDesktop
+          ? null
+          : AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              iconTheme: IconThemeData(color: Colors.grey[800]),
+              title: Text(
+                _getScreenTitle(),
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications_outlined),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.account_circle_outlined),
+                  onPressed: () {},
+                ),
+                const SizedBox(width: 16),
+              ],
+            ),
+      drawer: !isDesktop
+          ? CustomDrawer(
+              selectedPageIndex: selectedPageIndex,
+              onSelectPage: (index) {
+                switch (index) {
+                  case 0:
+                    Navigator.pushReplacementNamed(context, '/');
+                    break;
+                  case 1:
+                    Navigator.pushReplacementNamed(context, '/categories');
+                    break;
+                  case 2:
+                    Navigator.pushReplacementNamed(context, '/products');
+                    break;
+                  case 3:
+                    Navigator.pushReplacementNamed(context, '/sales');
+                    break;
+                  case 4:
+                    Navigator.pushReplacementNamed(context, '/reports');
+                    break;
+                }
+              },
+            )
+          : null,
+      body: Row(
+        children: [
+          if (isDesktop)
+            CustomDrawer(
+              selectedPageIndex: selectedPageIndex,
+              onSelectPage: (index) {
+                if (index == -2) {
+                  // Handle logout
+                  return;
+                }
+                switch (index) {
+                  case 0:
+                    Navigator.pushReplacementNamed(context, '/');
+                    break;
+                  case 1:
+                    Navigator.pushReplacementNamed(context, '/categories');
+                    break;
+                  case 2:
+                    Navigator.pushReplacementNamed(context, '/products');
+                    break;
+                  case 3:
+                    Navigator.pushReplacementNamed(context, '/sales');
+                    break;
+                  case 4:
+                    Navigator.pushReplacementNamed(context, '/reports');
+                    break;
+                }
+              },
+            ),
+          Expanded(
+            child: Column(
+              children: [
+                if (isDesktop)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
+                    color: Colors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _getScreenTitle(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.notifications_outlined),
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.account_circle_outlined),
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                Expanded(child: screen),
+              ],
+            ),
+          ),
+        ],
       ),
-      drawer: CustomDrawer(
-        selectedPageIndex: selectedPageIndex,
-        onSelectPage: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, '/');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, '/categories');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/products');
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, '/sales');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/reports');
-              break;
-            default:
-              break;
-          }
-        },
-      ),
-      body: screen,
     );
   }
 }

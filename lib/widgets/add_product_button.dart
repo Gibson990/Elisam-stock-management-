@@ -7,12 +7,12 @@ class AddProductButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 50.0,
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(Icons.add),
-        label: Text('Add Product'),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Product'),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: Colors.indigo,

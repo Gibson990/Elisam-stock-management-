@@ -58,46 +58,46 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Add Product'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text(
+          'Add Product',
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.grey[800]),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Center(
           child: Container(
-            constraints: BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  _buildButton(
-                    onPressed: _pickExcelFile,
-                    text: 'Upload Products via Excel',
-                  ),
-                  SizedBox(height: 20.0),
-                  _buildTextField(nameController, 'Name'),
-                  SizedBox(height: 20.0),
-                  _buildTextField(priceController, 'Price'),
-                  SizedBox(height: 20.0),
-                  _buildTextField(quantityController, 'Quantity Left'),
-                  SizedBox(height: 20.0),
-                  _buildDescriptionField(descriptionController, 'Description'),
-                  SizedBox(height: 20.0),
+                  _buildExcelUploadButton(),
+                  const SizedBox(height: 24.0),
+                  _buildTextField(
+                      nameController, 'Product Name', Icons.inventory),
+                  const SizedBox(height: 20.0),
+                  _buildTextField(priceController, 'Price', Icons.attach_money),
+                  const SizedBox(height: 20.0),
+                  _buildTextField(
+                      quantityController, 'Quantity Left', Icons.shopping_bag),
+                  const SizedBox(height: 20.0),
+                  _buildDescriptionField(
+                      descriptionController, 'Description', Icons.description),
+                  const SizedBox(height: 20.0),
                   _buildDropdown(widget.categories, 'Category'),
-                  SizedBox(height: 20.0),
-                  _buildTextField(imageUrlController, 'Image URL'),
-                  SizedBox(height: 20.0),
-                  _buildButton(
-                    onPressed: _pickImage,
-                    text: 'Upload Product Image',
-                  ),
-                  SizedBox(height: 20.0),
-                  _buildImagePreview(),
-                  SizedBox(height: 20.0),
-                  _buildButton(
-                    onPressed: _addProduct,
-                    text: 'Add Product',
-                  ),
+                  const SizedBox(height: 20.0),
+                  _buildImageSection(),
+                  const SizedBox(height: 32.0),
+                  _buildAddProductButton(),
                 ],
               ),
             ),
@@ -107,99 +107,351 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
+  Widget _buildTextField(
+      TextEditingController controller, String label, IconData icon) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          prefixIcon: Icon(icon, color: Colors.indigo[400], size: 22),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.indigo[300]!, width: 1.5),
+          ),
+          filled: true,
+          fillColor: Colors.grey[50],
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
-      style: TextStyle(fontSize: 16.0),
     );
   }
 
   Widget _buildDescriptionField(
-      TextEditingController controller, String label) {
-    return TextField(
-      controller: controller,
-      maxLines: 5,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
+      TextEditingController controller, String label, IconData icon) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        maxLines: 5,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          prefixIcon: Icon(icon, color: Colors.indigo[400], size: 22),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.indigo[300]!, width: 1.5),
+          ),
+          filled: true,
+          fillColor: Colors.grey[50],
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
-      style: TextStyle(fontSize: 16.0),
+    );
+  }
+
+  Widget _buildExcelUploadButton() {
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.green[400]!,
+            Colors.green[600]!,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: _pickExcelFile,
+        icon: const Icon(Icons.upload_file, color: Colors.white),
+        label: const Text(
+          'Upload via Excel',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          height: 56,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue[400]!,
+                Colors.blue[600]!,
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ElevatedButton.icon(
+            onPressed: _pickImage,
+            icon: const Icon(Icons.image, color: Colors.white),
+            label: const Text(
+              'Upload Product Image',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        if (imageUrlController.text.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                File(imageUrlController.text),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAddProductButton() {
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.indigo[500]!,
+            Colors.blue[600]!,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
+        onPressed: _addProduct,
+        icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+        label: const Text(
+          'Add Product',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildDropdown(List<Category> items, String label) {
-    return DropdownButtonFormField<Category>(
-      value: selectedCategory,
-      onChanged: (Category? newValue) {
-        setState(() {
-          selectedCategory = newValue;
-        });
-      },
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
-        ),
-      ),
-      items: items.map<DropdownMenuItem<Category>>((Category category) {
-        return DropdownMenuItem<Category>(
-          value: category,
-          child: Row(
-            children: [
-              Icon(category.icon),
-              SizedBox(width: 10),
-              Text(category.name),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.indigo.withOpacity(0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-        );
-      }).toList(),
-      hint: Text('Select a category'),
-      isExpanded: true,
-    );
-  }
-
-  Widget _buildButton({required VoidCallback onPressed, required String text}) {
-    return SizedBox(
-      height: 60.0,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: Text(
-          text.toUpperCase(),
+        ],
+      ),
+      child: DropdownButtonFormField<Category>(
+        value: selectedCategory,
+        onChanged: (Category? newValue) {
+          setState(() {
+            selectedCategory = newValue;
+          });
+        },
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.indigo[300]!, width: 1.5),
+          ),
+          filled: true,
+          fillColor: Colors.grey[50],
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        ),
+        items: items.map<DropdownMenuItem<Category>>((Category category) {
+          return DropdownMenuItem<Category>(
+            value: category,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    category.icon,
+                    color: Colors.indigo[400],
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  category.name,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[800],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+        icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+        dropdownColor: Colors.white,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey[800],
+        ),
+        hint: Text(
+          'Select a category',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            color: Colors.grey[600],
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
-        ),
+        isExpanded: true,
       ),
     );
-  }
-
-  Widget _buildImagePreview() {
-    if (imageUrlController.text.isNotEmpty) {
-      return Image.file(
-        File(imageUrlController.text),
-        height: 100,
-        width: 100,
-        fit: BoxFit.cover,
-      );
-    } else {
-      return Container();
-    }
   }
 
   void _addProduct() {
@@ -209,7 +461,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         descriptionController.text.isEmpty ||
         selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please fill in all fields and select a category'),
         ),
       );
@@ -219,7 +471,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     int? quantity = int.tryParse(quantityController.text);
     if (quantity == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid number for quantity')),
+        const SnackBar(
+            content: Text('Please enter a valid number for quantity')),
       );
       return;
     }

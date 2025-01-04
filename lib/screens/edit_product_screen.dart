@@ -69,33 +69,33 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: const Text('Edit Product'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Container(
-            constraints: BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _buildTextField(_nameController, 'Product Name'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildTextField(_priceController, 'Price'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildTextField(_quantityController, 'Quantity Left'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildDescriptionField(_descriptionController, 'Description'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildDropdown(Categories.list, 'Category'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildTextField(_imageUrlController, 'Image URL'),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildButton(
                   onPressed: _pickImage,
                   text: 'Upload Product Image',
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _buildButton(
                   onPressed: _saveChanges,
                   text: 'Save Changes',
@@ -120,7 +120,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           borderRadius: BorderRadius.circular(0),
         ),
       ),
-      style: TextStyle(fontSize: 16.0),
+      style: const TextStyle(fontSize: 16.0),
     );
   }
 
@@ -135,7 +135,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           borderRadius: BorderRadius.circular(0),
         ),
       ),
-      style: TextStyle(fontSize: 16.0),
+      style: const TextStyle(fontSize: 16.0),
     );
   }
 
@@ -161,7 +161,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: Row(
             children: [
               Icon(category.icon),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Text(category.name),
             ],
           ),
@@ -175,18 +175,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
       height: 60.0,
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text(
-          text.toUpperCase(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
+          ),
+        ),
+        child: Text(
+          text.toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -199,7 +199,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _quantityController.text.isEmpty ||
         _descriptionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
+        const SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
@@ -207,7 +207,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     int? quantity = int.tryParse(_quantityController.text);
     if (quantity == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid number for quantity')),
+        const SnackBar(
+            content: Text('Please enter a valid number for quantity')),
       );
       return;
     }

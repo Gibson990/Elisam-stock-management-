@@ -4,64 +4,66 @@ import 'package:elisam_store_management/models/category.dart';
 import 'package:elisam_store_management/models/product.dart';
 import 'package:elisam_store_management/models/productdata.dart';
 import 'package:elisam_store_management/widgets/product_details_sheet.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 final Map<String, Map<String, dynamic>> categoryStyles = {
   'electronics': {
     'icon': Icons.devices,
-    'colors': [Color(0xFF6C7FD8), Color(0xFF5163B3)],
+    'colors': [const Color(0xFF6C7FD8), const Color(0xFF5163B3)],
   },
   'clothing': {
     'icon': Icons.checkroom,
-    'colors': [Color(0xFFFF8C82), Color(0xFFE5484D)],
+    'colors': [const Color(0xFFFF8C82), const Color(0xFFE5484D)],
   },
   'groceries': {
     'icon': Icons.shopping_basket,
-    'colors': [Color(0xFFAED581), Color(0xFF689F38)],
+    'colors': [const Color(0xFFAED581), const Color(0xFF689F38)],
   },
   'sports & fitness': {
     'icon': Icons.fitness_center,
-    'colors': [Color(0xFF4CC9F0), Color(0xFF4361EE)],
+    'colors': [const Color(0xFF4CC9F0), const Color(0xFF4361EE)],
   },
   'books': {
     'icon': Icons.menu_book,
-    'colors': [Color(0xFFF4A261), Color(0xFFE76F51)],
+    'colors': [const Color(0xFFF4A261), const Color(0xFFE76F51)],
   },
   'home & kitchen': {
     'icon': Icons.kitchen,
-    'colors': [Color(0xFF9B5DE5), Color(0xFF7209B7)],
+    'colors': [const Color(0xFF9B5DE5), const Color(0xFF7209B7)],
   },
   'furniture': {
     'icon': Icons.chair,
-    'colors': [Color(0xFFB39DDB), Color(0xFF673AB7)],
+    'colors': [const Color(0xFFB39DDB), const Color(0xFF673AB7)],
   },
   'automotive': {
     'icon': Icons.directions_car,
-    'colors': [Color(0xFF64B5F6), Color(0xFF0D47A1)],
+    'colors': [const Color(0xFF64B5F6), const Color(0xFF0D47A1)],
   },
   'car accessories': {
-    'icon': Icons.car_repair,
-    'colors': [Color(0xFF90CAF9), Color(0xFF1976D2)],
+    'icon': Icons.build_circle,
+    'colors': [const Color(0xFFFF9800), const Color(0xFFF57C00)],
   },
   'toys': {
     'icon': Icons.toys,
-    'colors': [Color(0xFFFED766), Color(0xFFFF9E00)],
+    'colors': [const Color(0xFFFED766), const Color(0xFFFF9E00)],
   },
   'car electronics': {
-    'icon': Icons.electrical_services,
-    'colors': [Color(0xFFB39DDB), Color(0xFF673AB7)],
+    'icon': Icons.memory,
+    'colors': [const Color(0xFF00BCD4), const Color(0xFF006064)],
   },
   'car parts': {
-    'icon': Icons.build,
-    'colors': [Color(0xFF64B5F6), Color(0xFF0D47A1)],
+    'icon': Icons.handyman,
+    'colors': [const Color(0xFFFF7043), const Color(0xFFD84315)],
   },
   'tires & wheels': {
-    'icon': Icons.directions_car,
-    'colors': [Color(0xFF90CAF9), Color(0xFF1976D2)],
+    'icon': Icons.circle_outlined,
+    'colors': [const Color(0xFF78909C), const Color(0xFF37474F)],
   },
 };
 
 class CategoriesScreen extends StatefulWidget {
+  const CategoriesScreen({super.key});
+
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
@@ -100,40 +102,81 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          'Categories',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: 'Search categories...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                filled: true,
-                fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.indigo.withOpacity(0.08),
+                    offset: const Offset(0, 4),
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                  ),
+                  BoxShadow(
+                    color: Colors.indigo.withOpacity(0.05),
+                    offset: const Offset(0, 2),
+                    blurRadius: 4,
+                    spreadRadius: -1,
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: searchController,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[800],
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.indigo),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
+                decoration: InputDecoration(
+                  labelText: 'Search Categories',
+                  labelStyle: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hintText: 'Search by category name...',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.indigo[400],
+                    size: 22,
+                  ),
+                  suffixIcon: searchController.text.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(Icons.clear, color: Colors.grey[400]),
+                          onPressed: () {
+                            searchController.clear();
+                            setState(() {
+                              searchText = '';
+                            });
+                          },
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey[200]!, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        BorderSide(color: Colors.indigo[300]!, width: 1.5),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
               ),
             ),
@@ -178,7 +221,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Widget _buildMobileLayout() {
     return ListView.builder(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       itemCount: filteredCategories.length,
       itemBuilder: (context, index) {
         return CategoryTile(
@@ -279,12 +322,12 @@ class CategoryCard extends StatelessWidget {
   final int productCount;
 
   const CategoryCard({
-    Key? key,
+    super.key,
     required this.category,
     required this.onTap,
     this.showShadow = false,
     required this.productCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -367,69 +410,71 @@ class CategoryCard extends StatelessWidget {
   }
 
   Map<String, dynamic> _getCategoryStyle(String categoryName) {
-    // Debug print to see actual category names
-    print('Category name: $categoryName');
-
     String normalizedName = categoryName.toLowerCase().trim();
 
-    // Map specific category names to style keys
     final Map<String, Map<String, dynamic>> categoryMapping = {
       'home & kitchen': {
         'icon': Icons.kitchen,
-        'colors': [Color(0xFF9B5DE5), Color(0xFF7209B7)],
+        'colors': [const Color(0xFF9B5DE5), const Color(0xFF7209B7)],
       },
       'car accessories': {
         'icon': Icons.car_repair,
-        'colors': [Color(0xFF90CAF9), Color(0xFF1976D2)],
+        'colors': [const Color(0xFF90CAF9), const Color(0xFF1976D2)],
       },
       'sports & fitness': {
         'icon': Icons.fitness_center,
-        'colors': [Color(0xFF4CC9F0), Color(0xFF4361EE)],
+        'colors': [const Color(0xFF4CC9F0), const Color(0xFF4361EE)],
       },
       'automotive': {
         'icon': Icons.directions_car,
-        'colors': [Color(0xFF64B5F6), Color(0xFF0D47A1)],
+        'colors': [const Color(0xFF64B5F6), const Color(0xFF0D47A1)],
       },
       'furniture': {
         'icon': Icons.chair,
-        'colors': [Color(0xFFB39DDB), Color(0xFF673AB7)],
+        'colors': [const Color(0xFFB39DDB), const Color(0xFF673AB7)],
       },
       'electronics': {
         'icon': Icons.devices,
-        'colors': [Color(0xFF6C7FD8), Color(0xFF5163B3)],
+        'colors': [const Color(0xFF6C7FD8), const Color(0xFF5163B3)],
       },
       'clothing': {
         'icon': Icons.checkroom,
-        'colors': [Color(0xFFFF8C82), Color(0xFFE5484D)],
+        'colors': [const Color(0xFFFF8C82), const Color(0xFFE5484D)],
       },
       'groceries': {
         'icon': Icons.shopping_basket,
-        'colors': [Color(0xFFAED581), Color(0xFF689F38)],
+        'colors': [const Color(0xFFAED581), const Color(0xFF689F38)],
       },
       'books': {
         'icon': Icons.menu_book,
-        'colors': [Color(0xFFF4A261), Color(0xFFE76F51)],
+        'colors': [const Color(0xFFF4A261), const Color(0xFFE76F51)],
       },
       'toys': {
         'icon': Icons.toys,
-        'colors': [Color(0xFFFED766), Color(0xFFFF9E00)],
+        'colors': [const Color(0xFFFED766), const Color(0xFFFF9E00)],
+      },
+      'car electronics': {
+        'icon': Icons.memory,
+        'colors': [const Color(0xFF00BCD4), const Color(0xFF006064)],
+      },
+      'car parts': {
+        'icon': Icons.handyman,
+        'colors': [const Color(0xFFFF7043), const Color(0xFFD84315)],
+      },
+      'tires & wheels': {
+        'icon': Icons.circle_outlined,
+        'colors': [const Color(0xFF78909C), const Color(0xFF37474F)],
       },
     };
 
-    // Get the style directly from mapping or use a default with a unique color
-    final style = categoryMapping[normalizedName] ??
+    return categoryMapping[normalizedName] ??
         {
           'icon': Icons.category,
           'colors': [
-            Color(0xFF757575), // Primary gray
-            Color(0xFF616161), // Darker gray
+            const Color(0xFF757575),
+            const Color(0xFF616161),
           ],
         };
-
-    // Debug print the result
-    print('Style found: ${categoryMapping.containsKey(normalizedName)}');
-
-    return style;
   }
 }
 
@@ -439,11 +484,11 @@ class CategoryTile extends StatelessWidget {
   final int productCount;
 
   const CategoryTile({
-    Key? key,
+    super.key,
     required this.category,
     required this.onTap,
     required this.productCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -462,11 +507,11 @@ class ProductListView extends StatefulWidget {
   final Function(Product) onProductTap;
 
   const ProductListView({
-    Key? key,
+    super.key,
     required this.category,
     required this.products,
     required this.onProductTap,
-  }) : super(key: key);
+  });
 
   @override
   _ProductListViewState createState() => _ProductListViewState();
@@ -503,7 +548,7 @@ class _ProductListViewState extends State<ProductListView> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.indigo),
+                  borderSide: const BorderSide(color: Colors.indigo),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 20,
