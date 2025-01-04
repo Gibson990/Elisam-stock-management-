@@ -2,6 +2,7 @@ import 'package:elisam_store_management/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:elisam_store_management/models/productdata.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SalesScreen extends StatefulWidget {
   static final GlobalKey<_SalesScreenState> globalKey =
@@ -401,10 +402,19 @@ class _SalesScreenState extends State<SalesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: isLargeScreen
           ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _buildSearchField()),
                 const SizedBox(width: 24),
-                Expanded(child: _buildBarcodeField()),
+                Expanded(
+                  flex: 2,
+                  child: _buildSearchField(),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  flex: 1,
+                  child: _buildBarcodeField(),
+                ),
+                const SizedBox(width: 24),
               ],
             )
           : Column(
@@ -419,7 +429,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Widget _buildBarcodeField() {
     return Container(
-      height: 56, // Fixed height
+      height: 56,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -452,10 +462,17 @@ class _SalesScreenState extends State<SalesScreen> {
             color: Colors.grey[400],
             fontSize: 14,
           ),
-          prefixIcon: Icon(
-            Icons.qr_code_scanner,
-            color: Colors.indigo[400],
-            size: 22,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 12),
+            child: Icon(
+              MdiIcons.barcode,
+              color: Colors.indigo[400],
+              size: 32,
+            ),
+          ),
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 60,
+            minHeight: 56,
           ),
           suffixIcon: Container(
             margin: const EdgeInsets.all(8),
